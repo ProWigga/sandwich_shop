@@ -28,6 +28,7 @@ class OrderScreen extends StatefulWidget {
 }
 
 enum sandwichType { sixInches, footlong }
+
 sandwichType selectedType = sandwichType.sixInches;
 
 class _OrderScreenState extends State<OrderScreen> {
@@ -57,6 +58,9 @@ class _OrderScreenState extends State<OrderScreen> {
     final canIncrease = _quantity < widget.maxQuantity;
     final canDecrease = _quantity > 0;
 
+    final itemLabel =
+        selectedType == sandwichType.footlong ? 'Footlong' : 'Six-inch';
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sandwich Counter'),
@@ -67,7 +71,7 @@ class _OrderScreenState extends State<OrderScreen> {
           children: <Widget>[
             OrderItemDisplay(
               _quantity,
-              'Footlong',
+              itemLabel,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -80,6 +84,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   ),
                   child: const Text('Add'),
                 ),
+                const SizedBox(width: 12),
                 ElevatedButton(
                   onPressed: canDecrease ? _decreaseQuantity : null,
                   style: ElevatedButton.styleFrom(
@@ -91,24 +96,23 @@ class _OrderScreenState extends State<OrderScreen> {
               ],
             ),
             SegmentedButton<sandwichType>(
-    segments: const <ButtonSegment<sandwichType>>[
-      ButtonSegment<sandwichType>(
-          value: sandwichType.sixInches,
-          label: Text('Six Inches'),
-          ),
-      ButtonSegment<sandwichType>(
-          value: sandwichType.footlong,
-          label: Text('Footlong'),
-          ),
-    ],
-    selected: <sandwichType>{selectedType},
-    onSelectionChanged: (Set<sandwichType> newSelection) {
-      setState(() {
-        //Suggested change
-        selectedType = newSelection.first;
-      });
-    },
-  ),
+              segments: const <ButtonSegment<sandwichType>>[
+                ButtonSegment<sandwichType>(
+                  value: sandwichType.sixInches,
+                  label: Text('Six-inch'),
+                ),
+                ButtonSegment<sandwichType>(
+                  value: sandwichType.footlong,
+                  label: Text('Footlong'),
+                ),
+              ],
+              selected: <sandwichType>{selectedType},
+              onSelectionChanged: (Set<sandwichType> newSelection) {
+                setState(() {
+                  selectedType = newSelection.first;
+                });
+              },
+            ),
             const SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18.0),
