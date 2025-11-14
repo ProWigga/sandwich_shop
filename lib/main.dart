@@ -27,6 +27,9 @@ class OrderScreen extends StatefulWidget {
   }
 }
 
+enum sandwichType { sixInches, footlong }
+sandwichType selectedType = sandwichType.sixInches;
+
 class _OrderScreenState extends State<OrderScreen> {
   int _quantity = 0;
   final TextEditingController _notesController = TextEditingController();
@@ -51,6 +54,9 @@ class _OrderScreenState extends State<OrderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final canIncrease = _quantity < widget.maxQuantity;
+    final canDecrease = _quantity > 0;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sandwich Counter'),
@@ -67,7 +73,7 @@ class _OrderScreenState extends State<OrderScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
-                  onPressed: _increaseQuantity,
+                  onPressed: canIncrease ? _increaseQuantity : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                     foregroundColor: Colors.white,
@@ -75,7 +81,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   child: const Text('Add'),
                 ),
                 ElevatedButton(
-                  onPressed: _decreaseQuantity,
+                  onPressed: canDecrease ? _decreaseQuantity : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
                     foregroundColor: Colors.white,
@@ -84,15 +90,34 @@ class _OrderScreenState extends State<OrderScreen> {
                 ),
               ],
             ),
+            SegmentedButton<sandwichType>(
+    segments: const <ButtonSegment<sandwichType>>[
+      ButtonSegment<sandwichType>(
+          value: sandwichType.sixInches,
+          label: Text('Six Inches'),
+          ),
+      ButtonSegment<sandwichType>(
+          value: sandwichType.footlong,
+          label: Text('Footlong'),
+          ),
+    ],
+    selected: <sandwichType>{selectedType},
+    onSelectionChanged: (Set<sandwichType> newSelection) {
+      setState(() {
+        //Suggested change
+        selectedType = newSelection.first;
+      });
+    },
+  ),
             const SizedBox(height: 16),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              padding: const EdgeInsets.symmetric(horizontal: 18.0),
               child: TextField(
                 controller: _notesController,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'Notes',
-                  hintText: 'Add custom notes for your sandwich',
+                  labelText: 'Custom Notes',
+                  hintText: 'Tell us what you want!',
                 ),
               ),
             ),
