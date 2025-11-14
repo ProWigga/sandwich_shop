@@ -29,6 +29,7 @@ class OrderScreen extends StatefulWidget {
 
 class _OrderScreenState extends State<OrderScreen> {
   int _quantity = 0;
+  final TextEditingController _notesController = TextEditingController();
 
   void _increaseQuantity() {
     if (_quantity < widget.maxQuantity) {
@@ -40,6 +41,12 @@ class _OrderScreenState extends State<OrderScreen> {
     if (_quantity > 0) {
       setState(() => _quantity--);
     }
+  }
+
+  @override
+  void dispose() {
+    _notesController.dispose();
+    super.dispose();
   }
 
   @override
@@ -68,6 +75,18 @@ class _OrderScreenState extends State<OrderScreen> {
                   child: const Text('Remove'),
                 ),
               ],
+            ),
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: TextField(
+                controller: _notesController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Notes',
+                  hintText: 'Add custom notes for your sandwich',
+                ),
+              ),
             ),
           ],
         ),
