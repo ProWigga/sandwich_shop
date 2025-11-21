@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sandwich_shop/views/app_styles.dart';
 import 'package:sandwich_shop/repositories/order_repository.dart';
+import 'package:sandwich_shop/repositories/PricingRepository.dart';
 
 enum BreadType { white, wheat, wholemeal }
 
@@ -33,6 +34,7 @@ class OrderScreen extends StatefulWidget {
 
 class _OrderScreenState extends State<OrderScreen> {
   late final OrderRepository _orderRepository;
+  late final PricingRepository _pricingRepository;
   final TextEditingController _notesController = TextEditingController();
   bool _isFootlong = true;
   bool _isToasted = false;
@@ -42,6 +44,7 @@ class _OrderScreenState extends State<OrderScreen> {
   void initState() {
     super.initState();
     _orderRepository = OrderRepository(maxQuantity: widget.maxQuantity);
+    _pricingRepository = PricingRepository();
     _notesController.addListener(() {
       setState(() {});
     });
@@ -51,6 +54,15 @@ class _OrderScreenState extends State<OrderScreen> {
   void dispose() {
     _notesController.dispose();
     super.dispose();
+  }
+
+  String get _totalPriceDisplay {
+    double price = _pricingRepository.calculatePrice(
+      quantity: _orderRepository.quantity,
+      footlong: _isFootlong,
+      toasted: _isToasted,
+    );
+    return '\$${price.toStringAsFixed(2)}';
   }
 
   VoidCallback? _getIncreaseCallback() {
@@ -119,6 +131,7 @@ class _OrderScreenState extends State<OrderScreen> {
               itemType: sandwichType,
               breadType: _selectedBreadType,
               orderNote: noteForDisplay,
+              totalPriceDisplay: _totalPriceDisplay,
             ),
             const SizedBox(height: 20),
             Row(
@@ -230,6 +243,7 @@ class OrderItemDisplay extends StatelessWidget {
   final String itemType;
   final BreadType breadType;
   final String orderNote;
+  final String totalPriceDisplay;
 
   const OrderItemDisplay({
     super.key,
@@ -237,6 +251,7 @@ class OrderItemDisplay extends StatelessWidget {
     required this.itemType,
     required this.breadType,
     required this.orderNote,
+    required this.totalPriceDisplay,
   });
 
   @override
@@ -255,7 +270,13 @@ class OrderItemDisplay extends StatelessWidget {
           'Note: $orderNote',
           style: normalText,
         ),
+        const SizedBox(height: 8),
+        Text(
+          'Total: $totalPriceDisplay',
+          style: normalText,
+        ),
       ],
     );
   }
 }
+
