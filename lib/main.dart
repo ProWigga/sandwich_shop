@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sandwich_shop/views/app_styles.dart';
 
 void main() {
   runApp(const App());
@@ -99,11 +100,11 @@ class _OrderScreenState extends State<OrderScreen> {
               segments: const <ButtonSegment<sandwichType>>[
                 ButtonSegment<sandwichType>(
                   value: sandwichType.sixInches,
-                  label: Text('Six-inch'),
+                  label: Text('Six-inch', style: normalText),
                 ),
                 ButtonSegment<sandwichType>(
                   value: sandwichType.footlong,
-                  label: Text('Footlong'),
+                  label: Text('Footlong', style: normalText),
                 ),
               ],
               selected: <sandwichType>{selectedType},
