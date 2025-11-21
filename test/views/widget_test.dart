@@ -81,29 +81,45 @@ void main() {
       await tester.pump();
       expect(find.text('Note: Extra mayo'), findsOneWidget);
     });
-
+////////////////////////////////////////////////////////////////////
     testWidgets('switches between six-inch and footlong', (WidgetTester tester) async {
       await tester.pumpWidget(const App());
 
-      // assume default is footlong
       expect(find.textContaining('footlong'), findsNWidgets(2));
 
-      // Tap the control labeled 'six-inch' (may be a Toggle/Segmented control)
       final sixFinder = find.text('six-inch');
       expect(sixFinder, findsWidgets);
       await tester.tap(sixFinder.first);
       await tester.pumpAndSettle();
 
-      // Expect the display to show six-inch now
       expect(find.textContaining('six-inch'), findsOneWidget);
 
-      // Switch back to footlong
       final footFinder = find.text('footlong');
       expect(footFinder, findsWidgets);
       await tester.tap(footFinder.first);
       await tester.pumpAndSettle();
 
       expect(find.textContaining('footlong'), findsNWidgets(2));
+    });
+
+    testWidgets('switches between untoasted and toasted', (WidgetTester tester) async {
+      await tester.pumpWidget(const App());
+
+      expect(find.textContaining('untoasted'), findsOneWidget);
+
+      final toastFinder = find.text('toasted');
+      expect(toastFinder, findsWidgets);
+      await tester.tap(toastFinder.first);
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('toasted'), findsNWidgets(2));
+
+      final untoastFinder = find.text('untoasted');
+      expect(untoastFinder, findsWidgets);
+      await tester.tap(untoastFinder.first);
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('untoasted'), findsOneWidget);
     });
   });
 
