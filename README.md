@@ -2,7 +2,7 @@
 
 A simple Flutter sample app that demonstrates a cross-platform "Sandwich Shop" UI. The app is a minimal Flutter project with mobile (Android / iOS), web, and desktop (Windows / Linux / macOS) runner code included.
 
-Key features
+# Key features
 - Simple home screen and counter UI implemented in Flutter. See [`main`](lib/main.dart) and the [`MyHomePage`](lib/main.dart) widget.  
 - Platform-specific runner code for desktop platforms:
   - Linux GTK integration and app lifecycle in [`MyApplication`](linux/runner/my_application.h) / [`my_application_new`](linux/runner/my_application.cc) and [`my_application_activate`](linux/runner/my_application.cc).
@@ -10,11 +10,11 @@ Key features
   - macOS window setup in [`MainFlutterWindow`](macos/Runner/MainFlutterWindow.swift) and app delegate in [`AppDelegate`](macos/Runner/AppDelegate.swift).
 - Plugin registration placeholders: [`RegisterPlugins`](windows/flutter/generated_plugin_registrant.cc) and [`fl_register_plugins`](linux/flutter/generated_plugin_registrant.cc) are present but empty in this project.
 
-assets/projectUI.png
+![Main UI] (assets/projectUI.png)
 
 Getting started
 
-Prerequisites
+# Prerequisites
 - Flutter SDK (stable). See flutter.dev for install instructions.
 - Platform-specific toolchains:
   - Android: Android SDK and an emulator/device.
@@ -50,7 +50,7 @@ Development notes
 Hot reload works as usual:
 
 `flutter run`
-# make code changes, then press "r" in the terminal for hot reload
+make code changes, then press "r" in the terminal for hot reload
 
 Usage
 
