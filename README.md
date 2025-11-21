@@ -7,6 +7,7 @@ Briefly, the app lets users:
 - Increment / decrement sandwich quantity (with a max limit)
 - Add a short note for the order
 - See an order item display showing quantity, bread, type, emoji for sandwiches, and the note
+- Display the total price of the order depending on the sandwich type
 
 Key features
 - Order screen with controls: Add / Remove buttons, bread selector, notes text field
@@ -15,17 +16,6 @@ Key features
 - Widget tests covering UI behaviors (tests located under test/)
 
 ![Main UI](assets/projectUI.png)
-
-# Specifics:
-
-- Simple home screen and counter UI implemented in Flutter. See [`main`](lib/main.dart) and the [`MyHomePage`](lib/main.dart) widget.  
-- Platform-specific runner code for desktop platforms:
-  - Linux GTK integration and app lifecycle in [`MyApplication`](linux/runner/my_application.h) / [`my_application_new`](linux/runner/my_application.cc) and [`my_application_activate`](linux/runner/my_application.cc).
-  - Windows Win32 runner and window management in [`FlutterWindow::OnCreate`](windows/runner/flutter_window.cpp), [`CreateAndAttachConsole`](windows/runner/utils.cpp) and [`GetCommandLineArguments`](windows/runner/utils.cpp).
-  - macOS window setup in [`MainFlutterWindow`](macos/Runner/MainFlutterWindow.swift) and app delegate in [`AppDelegate`](macos/Runner/AppDelegate.swift).
-- Plugin registration placeholders: [`RegisterPlugins`](windows/flutter/generated_plugin_registrant.cc) and [`fl_register_plugins`](linux/flutter/generated_plugin_registrant.cc) are present but empty in this project.
-
-
 
 # Getting started
 
@@ -92,5 +82,5 @@ test/views/widget_test.dart (widget coverage for order interactions and small re
 
 
 
-For further enquiries: upXXXXXXX@myport.ac.uk
+For further enquiries: up2306587@myport.ac.uk
 
