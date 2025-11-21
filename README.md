@@ -10,7 +10,7 @@ A simple Flutter sample app that demonstrates a cross-platform "Sandwich Shop" U
   - macOS window setup in [`MainFlutterWindow`](macos/Runner/MainFlutterWindow.swift) and app delegate in [`AppDelegate`](macos/Runner/AppDelegate.swift).
 - Plugin registration placeholders: [`RegisterPlugins`](windows/flutter/generated_plugin_registrant.cc) and [`fl_register_plugins`](linux/flutter/generated_plugin_registrant.cc) are present but empty in this project.
 
-![Main UI] (assets/projectUI.png)
+![Main UI](assets/projectUI.png)
 
 Getting started
 
