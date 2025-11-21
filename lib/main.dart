@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sandwich_shop/views/app_styles.dart';
+import 'package:sandwich_shop/repositories/order_repository.dart';
+
+enum BreadType { white, wheat, wholemeal }
 
 void main() {
   runApp(const App());
@@ -12,7 +15,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: 'Sandwich Shop App',
-      home: OrderScreen(maxQuantity: 10),
+      home: OrderScreen(maxQuantity: 5),
     );
   }
 }
@@ -28,24 +31,19 @@ class OrderScreen extends StatefulWidget {
   }
 }
 
-enum sandwichType { sixInches, footlong }
-
-sandwichType selectedType = sandwichType.sixInches;
-
 class _OrderScreenState extends State<OrderScreen> {
-  int _quantity = 0;
+  late final OrderRepository _orderRepository;
   final TextEditingController _notesController = TextEditingController();
+  bool _isFootlong = true;
+  BreadType _selectedBreadType = BreadType.white;
 
-  void _increaseQuantity() {
-    if (_quantity < widget.maxQuantity) {
-      setState(() => _quantity++);
-    }
-  }
-
-  void _decreaseQuantity() {
-    if (_quantity > 0) {
-      setState(() => _quantity--);
-    }
+  @override
+  void initState() {
+    super.initState();
+    _orderRepository = OrderRepository(maxQuantity: widget.maxQuantity);
+    _notesController.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
@@ -54,146 +52,195 @@ class _OrderScreenState extends State<OrderScreen> {
     super.dispose();
   }
 
+  VoidCallback? _getIncreaseCallback() {
+    if (_orderRepository.canIncrement) {
+      return () => setState(_orderRepository.increment);
+    }
+    return null;
+  }
+
+  VoidCallback? _getDecreaseCallback() {
+    if (_orderRepository.canDecrement) {
+      return () => setState(_orderRepository.decrement);
+    }
+    return null;
+  }
+
+  void _onSandwichTypeChanged(bool value) {
+    setState(() => _isFootlong = value);
+  }
+
+  void _onBreadTypeSelected(BreadType? value) {
+    if (value != null) {
+      setState(() => _selectedBreadType = value);
+    }
+  }
+
+  List<DropdownMenuEntry<BreadType>> _buildDropdownEntries() {
+    List<DropdownMenuEntry<BreadType>> entries = [];
+    for (BreadType bread in BreadType.values) {
+      DropdownMenuEntry<BreadType> newEntry = DropdownMenuEntry<BreadType>(
+        value: bread,
+        label: bread.name,
+      );
+      entries.add(newEntry);
+    }
+    return entries;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final canIncrease = _quantity < widget.maxQuantity;
-    final canDecrease = _quantity > 0;
+    String sandwichType = 'footlong';
+    if (!_isFootlong) {
+      sandwichType = 'six-inch';
+    }
 
-    final itemLabel =
-        selectedType == sandwichType.footlong ? 'Footlong' : 'Six-inch';
+    String noteForDisplay;
+    if (_notesController.text.isEmpty) {
+      noteForDisplay = 'No notes added.';
+    } else {
+      noteForDisplay = _notesController.text;
+    }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sandwich Counter'),
+        title: const Text(
+          'Sandwich Counter',
+          style: heading1,
+        ),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             OrderItemDisplay(
-              _quantity,
-              itemLabel,
+              quantity: _orderRepository.quantity,
+              itemType: sandwichType,
+              breadType: _selectedBreadType,
+              orderNote: noteForDisplay,
             ),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(
-                  onPressed: canIncrease ? _increaseQuantity : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    foregroundColor: Colors.white,
-                  ),
-                  child: const Text('Add'),
+                const Text('six-inch', style: normalText),
+                Switch(
+                  value: _isFootlong,
+                  onChanged: _onSandwichTypeChanged,
                 ),
-                const SizedBox(width: 12),
-                ElevatedButton(
-                  onPressed: canDecrease ? _decreaseQuantity : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    foregroundColor: Colors.white,
-                  ),
-                  child: const Text('Remove'),
-                ),
+                const Text('footlong', style: normalText),
               ],
             ),
-            SegmentedButton<sandwichType>(
-              segments: const <ButtonSegment<sandwichType>>[
-                ButtonSegment<sandwichType>(
-                  value: sandwichType.sixInches,
-                  label: Text('Six-inch', style: normalText),
-                ),
-                ButtonSegment<sandwichType>(
-                  value: sandwichType.footlong,
-                  label: Text('Footlong', style: normalText),
-                ),
-              ],
-              selected: <sandwichType>{selectedType},
-              onSelectionChanged: (Set<sandwichType> newSelection) {
-                setState(() {
-                  selectedType = newSelection.first;
-                });
-              },
+            const SizedBox(height: 10),
+            DropdownMenu<BreadType>(
+              textStyle: normalText,
+              initialSelection: _selectedBreadType,
+              onSelected: _onBreadTypeSelected,
+              dropdownMenuEntries: _buildDropdownEntries(),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18.0),
+              padding: const EdgeInsets.all(40.0),
               child: TextField(
+                key: const Key('notes_textfield'),
                 controller: _notesController,
                 decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Custom Notes',
-                  hintText: 'Tell us what you want!',
+                  labelText: 'Add a note (e.g., no onions)',
                 ),
               ),
             ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                StyledButton(
+                  onPressed: _getIncreaseCallback(),
+                  icon: Icons.add,
+                  label: 'Add',
+                  backgroundColor: Colors.green,
+                ),
+                const SizedBox(width: 8),
+                StyledButton(
+                  onPressed: _getDecreaseCallback(),
+                  icon: Icons.remove,
+                  label: 'Remove',
+                  backgroundColor: Colors.red,
+                ),
+              ],
+            ),
           ],
         ),
+      ),
+    );
+  }
+}
+class StyledButton extends StatelessWidget {
+  final VoidCallback? onPressed;
+  final IconData icon;
+  final String label;
+  final Color backgroundColor;
+
+  const StyledButton({
+    super.key,
+    required this.onPressed,
+    required this.icon,
+    required this.label,
+    required this.backgroundColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    ButtonStyle myButtonStyle = ElevatedButton.styleFrom(
+      backgroundColor: backgroundColor,
+      foregroundColor: Colors.white,
+      textStyle: normalText,
+    );
+
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: myButtonStyle,
+      child: Row(
+        children: [
+          Icon(icon),
+          const SizedBox(width: 8),
+          Text(label),
+        ],
       ),
     );
   }
 }
 
 class OrderItemDisplay extends StatelessWidget {
-  final String itemType;
   final int quantity;
+  final String itemType;
+  final BreadType breadType;
+  final String orderNote;
 
-  const OrderItemDisplay(this.quantity, this.itemType, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Text('$quantity $itemType sandwich(es): ${'🥪' * quantity}');
-  }
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Sandwich Shop App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'My Sandiwch Shop'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  void _incrementCounter() {
-    setState(() {});
-  }
+  const OrderItemDisplay({
+    super.key,
+    required this.quantity,
+    required this.itemType,
+    required this.breadType,
+    required this.orderNote,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text('Welcome to THE Sandwich Shop'),
-          ],
+    String displayText =
+        '$quantity ${breadType.name} $itemType sandwich(es): ${'🥪' * quantity}';
+
+    return Column(
+      children: [
+        Text(
+          displayText,
+          style: normalText,
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+        const SizedBox(height: 8),
+        Text(
+          'Note: $orderNote',
+          style: normalText,
+        ),
+      ],
     );
   }
 }
