@@ -1,8 +1,23 @@
 # Sandwich Shop
 
-A simple Flutter sample app that demonstrates a cross-platform "Sandwich Shop" UI. The app is a minimal Flutter project with mobile (Android / iOS), web, and desktop (Windows / Linux / macOS) runner code included.
+A simple Flutter sample app demonstrating a cross-platform "Sandwich Shop" UI and basic stateful widgets for ordering sandwiches.
 
-# Key features
+Briefly, the app lets users:
+- Choose bread type
+- Increment / decrement sandwich quantity (with a max limit)
+- Add a short note for the order
+- See an order item display showing quantity, bread, type, emoji for sandwiches, and the note
+
+Key features
+- Order screen with controls: Add / Remove buttons, bread selector, notes text field
+- Limit enforcement on minimum (0) and maximum quantity
+- Reusable styled button widget and order item display widget
+- Widget tests covering UI behaviors (tests located under test/)
+
+![Main UI](assets/projectUI.png)
+
+# Specifics:
+
 - Simple home screen and counter UI implemented in Flutter. See [`main`](lib/main.dart) and the [`MyHomePage`](lib/main.dart) widget.  
 - Platform-specific runner code for desktop platforms:
   - Linux GTK integration and app lifecycle in [`MyApplication`](linux/runner/my_application.h) / [`my_application_new`](linux/runner/my_application.cc) and [`my_application_activate`](linux/runner/my_application.cc).
@@ -10,11 +25,12 @@ A simple Flutter sample app that demonstrates a cross-platform "Sandwich Shop" U
   - macOS window setup in [`MainFlutterWindow`](macos/Runner/MainFlutterWindow.swift) and app delegate in [`AppDelegate`](macos/Runner/AppDelegate.swift).
 - Plugin registration placeholders: [`RegisterPlugins`](windows/flutter/generated_plugin_registrant.cc) and [`fl_register_plugins`](linux/flutter/generated_plugin_registrant.cc) are present but empty in this project.
 
-![Main UI](assets/projectUI.png)
 
-Getting started
 
-# Prerequisites
+# Getting started
+
+Prerequisites:
+
 - Flutter SDK (stable). See flutter.dev for install instructions.
 - Platform-specific toolchains:
   - Android: Android SDK and an emulator/device.
@@ -23,7 +39,7 @@ Getting started
   - Linux: GTK+ 3 and usual build tools (cmake, gcc, etc).
 - CMake (used by desktop runners).
 
-Clone the repository
+Clone the repository:
 
 `git clone https://your.remote/repo.git sandwich_shop`
 `cd sandwich_shop`
@@ -50,11 +66,10 @@ Development notes
 Hot reload works as usual:
 
 `flutter run`
-make code changes, then press "r" in the terminal for hot reload
 
-Usage
+Make code changes, then press "r" in the terminal for hot reload
 
-Main flows
+Usage:
 
 Open the app to view the Order screen.
 Use "Add" to increment quantity; UI updates to display sandwich emoji for each item (up to the configured max).
