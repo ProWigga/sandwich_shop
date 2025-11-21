@@ -1,5 +1,7 @@
 # Sandwich Shop
 
+## Description
+
 A simple Flutter sample app demonstrating a cross-platform "Sandwich Shop" UI and basic stateful widgets for ordering sandwiches.
 
 Briefly, the app lets users:
@@ -31,8 +33,10 @@ Prerequisites:
 
 Clone the repository:
 
-`git clone https://your.remote/repo.git sandwich_shop`
-`cd sandwich_shop`
+```bash
+git clone https://your.remote/repo.git sandwich_shop
+cd sandwich_shop
+```
 
 Install dependencies:
 
